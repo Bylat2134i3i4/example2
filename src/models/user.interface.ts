@@ -1,14 +1,14 @@
-export interface Registration {
+export interface IReg {
   lastName: string; //фамилия
   firstName: string; //имя
   middleName: string; // отчество
-  registrationPurposeCode: 11;
-  agreement: true;
+  registrationPurposeCode: number;
+  agreement: boolean;
   phone: string;
   password: string;
 }
 
-export interface Authorization {
+export interface IAuth {
   username: string;
   password: string;
 }

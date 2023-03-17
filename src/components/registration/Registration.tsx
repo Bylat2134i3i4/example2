@@ -1,25 +1,38 @@
-import { FC, useState } from "react";
-import {
-  Button,
-  Form,
-  Checkbox,
-  Input,
-  Typography,
-  Radio,
-  RadioChangeEvent,
-} from "antd";
+import { FC, useState } from 'react';
+import { Button, Form, Checkbox, Input, Typography, Radio, RadioChangeEvent } from 'antd';
 
-import styles from "./Registration.module.scss";
-import { Link } from "react-router-dom";
-import { CheckboxChangeEvent } from "antd/es/checkbox";
+import { useReg_UserMutation } from '../../http';
+
+import styles from './Registration.module.scss';
+import { Link } from 'react-router-dom';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { IReg } from '../../models/user.interface';
+import classNames from 'classnames';
 
 const { Title } = Typography;
 
 export const Registration: FC = () => {
   const [value, setValue] = useState(1);
 
+  let new_user: IReg = {
+    lastName: 'fedorov',
+    firstName: 'ivan',
+    middleName: 'viktorovich',
+    registrationPurposeCode: 11,
+    agreement: true,
+    phone: '+89275564144',
+    password: 'aeveneleve34Nabc',
+  };
+
+  const [Reg_User, { isLoading, isError, data }] = useReg_UserMutation();
+
+  const Some = async () => {
+    await Reg_User(new_user);
+    console.log(data);
+  };
+
   const onChangeRadio = (e: RadioChangeEvent) => {
-    console.log("radio checked", e.target.value);
+    console.log('radio checked', e.target.value);
     setValue(e.target.value);
   };
 
@@ -28,13 +41,16 @@ export const Registration: FC = () => {
   };
 
   const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
+    console.log('Received values of form: ', values);
   };
   return (
-    <div className={styles.main}>
+    <div
+      className={isLoading ? classNames(styles.main, 'bg-gray-500 animation-ping') : styles.main}
+    >
+      {isError && <div>Ошибка</div>}
       <h3 className={styles.univer}>ИАС “Электронный университет”</h3>
       <Form
-        name="login"
+        name='login'
         className={styles.loginForm}
         initialValues={{ remember: true }}
         onFinish={onFinish}
@@ -47,67 +63,56 @@ export const Registration: FC = () => {
           </Radio.Group>
         </Form.Item>
         <Form.Item
-          name="surname"
-          rules={[
-            { type: "string" },
-            { required: true, message: "Please input your Surname!" },
-          ]}
+          name='surname'
+          rules={[{ type: 'string' }, { required: true, message: 'Please input your Surname!' }]}
         >
-          <Input size="large" placeholder="Фамилия" />
+          <Input size='large' placeholder='Фамилия' />
         </Form.Item>
 
         <Form.Item
-          name="name"
-          rules={[
-            { type: "string" },
-            { required: true, message: "Please input your Name!" },
-          ]}
+          name='name'
+          rules={[{ type: 'string' }, { required: true, message: 'Please input your Name!' }]}
         >
-          <Input size="large" placeholder="Имя" />
+          <Input size='large' placeholder='Имя' />
         </Form.Item>
         <Form.Item
-          name="username"
-          rules={[
-            { type: "email" },
-            { required: true, message: "Please input your Email!" },
-          ]}
+          name='username'
+          rules={[{ type: 'email' }, { required: true, message: 'Please input your Email!' }]}
         >
-          <Input size="large" placeholder="Логин / Email" />
+          <Input size='large' placeholder='Логин / Email' />
         </Form.Item>
 
         <Form.Item
           className={styles.password}
-          name="password"
-          rules={[{ required: true, message: "Please input your Password!" }]}
+          name='password'
+          rules={[{ required: true, message: 'Please input your Password!' }]}
         >
-          <Input size="large" type="password" placeholder="Пароль" />
+          <Input size='large' type='password' placeholder='Пароль' />
         </Form.Item>
         <p className={styles.password}>
-          Пароль должен содержать от 8 символов, буквы верхнего и нижнего
-          регистра, а также цифры
+          Пароль должен содержать от 8 символов, буквы верхнего и нижнего регистра, а также цифры
         </p>
         <Form.Item
-          name="confirmPassword"
-          rules={[{ required: true, message: "Please input your Password!" }]}
+          name='confirmPassword'
+          rules={[{ required: true, message: 'Please input your Password!' }]}
         >
-          <Input size="large" type="password" placeholder="Повторите пароль" />
+          <Input size='large' type='password' placeholder='Повторите пароль' />
         </Form.Item>
 
         <Form.Item>
           <div className={styles.buttons}>
-            <Button size="large" type="primary" htmlType="submit">
+            <Button size='large' type='primary' htmlType='submit' onClick={() => Some()}>
               Далее
             </Button>
             <Checkbox onChange={onChangeCheckbox}>
               <p>
-                Я принимаю пользовательское соглашение и даю разрешение порталу
-                КФУ на обработку моих персональных данных в соотвествии с
-                Федеральным законом №152-ФЗ от 27.07.2006 года “О персональных
-                данных”
+                Я принимаю пользовательское соглашение и даю разрешение порталу КФУ на обработку
+                моих персональных данных в соотвествии с Федеральным законом №152-ФЗ от 27.07.2006
+                года “О персональных данных”
               </p>
             </Checkbox>
             <span>
-              Уже есть профиль? <Link to="/to">Войдите</Link>
+              Уже есть профиль? <Link to='/to'>Войдите</Link>
             </span>
           </div>
         </Form.Item>
