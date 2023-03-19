@@ -2,7 +2,6 @@ import { FC } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { useAuth_UserMutation } from '../../http';
 
 import styles from './Login.module.scss';
 import CircleSVG from '../../assets/svg/CircleSVG';
@@ -12,12 +11,6 @@ const { Title } = Typography;
 export const Login: FC = () => {
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
-  };
-
-  const [loginUser, { isLoading, data, isError }] = useAuth_UserMutation();
-
-  const lets = async () => {
-    await loginUser({ username: 'ayaz@gmail.com', password: 'ayaz2002' });
   };
 
   return (
@@ -63,7 +56,7 @@ export const Login: FC = () => {
 
         <Form.Item>
           <div className={styles.buttons}>
-            <Button size='large' type='primary' htmlType='submit' onClick={() => lets()}>
+            <Button size='large' type='primary' htmlType='submit'>
               Войти
             </Button>
             <span>

@@ -1,16 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { userAPI } from '../http';
+
 import GeneralSlice from './Slices/GeneralSlice';
-import { setupListeners } from '@reduxjs/toolkit/dist/query/react';
+import { useDispatch } from 'react-redux';
 
 export const store = configureStore({
   reducer: {
-    [userAPI.reducerPath]: userAPI.reducer,
     slice: GeneralSlice,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userAPI.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-setupListeners(store.dispatch);
+export const useAppDispatch: () => AppDispatch = useDispatch;

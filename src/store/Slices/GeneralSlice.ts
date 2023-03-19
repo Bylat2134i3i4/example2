@@ -1,39 +1,42 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 interface Reg {
   id: string | null;
-  token: string | null;
+  accessToken: string | null;
 }
 
 const initialState: Reg = {
   id: null,
-  token: null,
+  accessToken: null,
 };
 
 const GeneralSlice = createSlice({
   name: 'slice',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<{ id: string; token: string }>) => {
-      state.id = action.payload.id;
-      state.token = action.payload.token;
-      localStorage.setItem(
-        'user',
-        JSON.stringify({
-          id: action.payload.id,
-          token: action.payload.token,
-        }),
-      );
+    AuthUser: (state, action: PayloadAction<{ accessToken: string; refreshToken: string }>) => {
+      state.accessToken = action.payload.accessToken;
+      localStorage.setItem('token', action.payload.accessToken);
+      cookies.set('refresh', action.payload.refreshToken, { maxAge: 604800 });
     },
-    logOut: (state) => {
+    RegUser: (state, action: PayloadAction<{ id: string }>) => {
+      state.id = action.payload.id;
+      state.accessToken = null;
+    },
+
+    LogOut: (state) => {
+      cookies.remove('refresh');
+      localStorage.clear();
       state.id = null;
-      state.token = null;
+      state.accessToken = null;
     },
   },
 });
 
-export const { setUser, logOut } = GeneralSlice.actions;
+export const { AuthUser, RegUser, LogOut } = GeneralSlice.actions;
 
 export default GeneralSlice.reducer;
 

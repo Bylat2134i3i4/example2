@@ -1,20 +1,20 @@
 import { FC, useState } from 'react';
 import { Button, Form, Checkbox, Input, Typography, Radio, RadioChangeEvent } from 'antd';
 
-import { useReg_UserMutation } from '../../http';
-
 import styles from './Registration.module.scss';
 import { Link } from 'react-router-dom';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
-import { IReg } from '../../models/user.interface';
-import classNames from 'classnames';
+import { IRegRequest } from '../../api/request/types';
+import { useAppDispatch } from '../../store/store';
+import { regUser } from '../../store/ActionCreators';
 
 const { Title } = Typography;
 
 export const Registration: FC = () => {
+  const dispatch = useAppDispatch();
   const [value, setValue] = useState(1);
 
-  let new_user: IReg = {
+  let new_user: IRegRequest = {
     lastName: 'fedorov',
     firstName: 'ivan',
     middleName: 'viktorovich',
@@ -24,11 +24,8 @@ export const Registration: FC = () => {
     password: 'aeveneleve34Nabc',
   };
 
-  const [Reg_User, { isLoading, isError, data }] = useReg_UserMutation();
-
-  const Some = async () => {
-    await Reg_User(new_user);
-    console.log(data);
+  const Some = () => {
+    dispatch(regUser(new_user));
   };
 
   const onChangeRadio = (e: RadioChangeEvent) => {
@@ -44,10 +41,7 @@ export const Registration: FC = () => {
     console.log('Received values of form: ', values);
   };
   return (
-    <div
-      className={isLoading ? classNames(styles.main, 'bg-gray-500 animation-ping') : styles.main}
-    >
-      {isError && <div>Ошибка</div>}
+    <div className={styles.main}>
       <h3 className={styles.univer}>ИАС “Электронный университет”</h3>
       <Form
         name='login'
